@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class TestSorter {
     private final String selectedFilePath;
@@ -72,9 +73,13 @@ public class TestSorter {
 
         try (FileWriter fw = new FileWriter(outFile)) {
             writeToFile(fw, String.format("Nr of lines read: %s, nr of songs sorted: %s", this.lineNr, this.outLineNr));
+            writeToFile(fw, "");
 
             List<String> years = new ArrayList<>(mapByYear.keySet());
+            List<String> additionalYears = mapSingleByYear.keySet().stream().filter(year -> !years.contains(year)).collect(Collectors.toList());
+            years.addAll(additionalYears);
             Collections.sort(years);
+
             years.forEach(year -> {
                 List<String> singleSongs = mapSingleByYear.get(year);
                 if (singleSongs != null && singleSongs.size() > 0) {
